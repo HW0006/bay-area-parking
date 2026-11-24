@@ -71,6 +71,32 @@ a{color:var(--teal2)}
 .sbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 4px;font-size:13px;cursor:pointer;min-height:44px;line-height:1.3}
 .sbtn small{display:block;font-size:11px;color:var(--muted)}
 .sbtn:active{transform:scale(.98)}
+.addbox{background:var(--card);border:1.5px dashed var(--purple);border-radius:16px;padding:16px;margin:0 0 18px}
+.addbox-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.addbox-head h2{font-size:18px;margin:0;line-height:1.3}
+.addbox-head p{margin:4px 0 0;font-size:13.5px;color:var(--muted);max-width:620px}
+.add-toggle{background:var(--teal);color:#fff;border:none;font-weight:700;padding:12px 16px;border-radius:12px;min-height:48px;font-size:15px;cursor:pointer;white-space:nowrap}
+@media (prefers-color-scheme: dark){.add-toggle{color:#131a10}}
+.add-form{display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.add-form.open{display:block}
+.fgrid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.fgrid{grid-template-columns:1fr 1fr}.fgrid .wide{grid-column:1/-1}}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.field label span{color:var(--muted);font-weight:500}
+.field input,.field select,.field textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;min-height:48px;font-family:inherit}
+.field textarea{min-height:64px;resize:vertical}
+.loc-btn{margin-top:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 12px;font-size:13.5px;cursor:pointer;min-height:44px}
+.loc-note{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.form-msg{display:none;font-size:14px;margin:12px 0 0;padding:10px 12px;border-radius:10px}
+.form-msg.err{display:block;background:var(--red-bg);color:var(--red)}
+.form-msg.ok{display:block;background:var(--green-bg);color:var(--green)}
+.add-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.add-submit{background:var(--btn);color:var(--bg);border:none;font-weight:700;padding:13px 18px;border-radius:12px;min-height:48px;font-size:15px;cursor:pointer}
+@media (prefers-color-scheme: light){.add-submit{color:#fff}}
+.add-cancel{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;padding:13px 16px;border-radius:12px;min-height:48px;font-size:15px;cursor:pointer}
+.mine-badge{display:inline-block;background:var(--amber-bg);color:var(--amber);font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:2px;letter-spacing:0;text-transform:none}
+.del-btn{align-self:flex-start;background:transparent;border:1px solid var(--line);color:var(--red);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px}
+.del-btn.armed{background:var(--red);color:#fff;border-color:var(--red)}
 .empty{display:none;text-align:center;padding:40px 16px;color:var(--muted)}
 footer{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 footer p{margin:6px 0}
@@ -94,6 +120,64 @@ footer p{margin:6px 0}
     <p><strong>San Jose live counts 即時空位：</strong> Downtown San Jose is the one place here with a real live feed. ParkSJ shows % full and spots left, updated live — check before you drive.<br>聖荷西市中心是這裡唯一有真正即時資料的地方，ParkSJ 會顯示滿位比例和剩餘位子，出發前先看。</p>
     <a href="https://parksj.org/" target="_blank" rel="noopener">Open ParkSJ ↗ 開啟 ParkSJ</a>
   </div>
+
+  <section class="addbox" aria-label="Add your own parking spot 新增你自己的停車點">
+    <div class="addbox-head">
+      <div>
+        <h2>Don’t see your street? Add it. 找不到你的街道？自己新增</h2>
+        <p>Add any street, lot, or garage in about 30 seconds — it shows up as a card below, ready for status reports and Waze navigation, just like the built-in ones. Your added spots are saved on this device. 任何街道、停車場都可以加，大約 30 秒就好 — 新增後會變成下面的卡片，可以回報空位、也可以用 Waze 導航。你新增的地點會存在這台裝置上。</p>
+      </div>
+      <button class="add-toggle" id="addToggle" type="button" aria-expanded="false">＋ Add a spot 新增停車點</button>
+    </div>
+    <form class="add-form" id="addForm" novalidate>
+      <div class="fgrid">
+        <div class="field wide">
+          <label for="fName">Street or lot name 街道或停車場名稱 *</label>
+          <input id="fName" type="text" placeholder="e.g. Elm St near the library · 例如：圖書館旁的 Elm St" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="fCity">City 城市 *</label>
+          <select id="fCity"></select>
+        </div>
+        <div class="field">
+          <label for="fCost">Cost 費用</label>
+          <select id="fCost">
+            <option value="free">Free 免費</option>
+            <option value="paid">Paid 收費</option>
+            <option value="unknown">Not sure 不確定</option>
+          </select>
+        </div>
+        <div class="field wide">
+          <label for="fAddr">Address 地址 * <span>— street + city is enough, Waze uses this 寫街道和城市就好，Waze 會用這個導航</span></label>
+          <input id="fAddr" type="text" placeholder="e.g. 200 Elm St, San Jose, CA · 例如：200 Elm St, San Jose, CA" autocomplete="off">
+          <button class="loc-btn" id="locBtn" type="button">📍 Use my current location instead 用我現在的位置</button>
+          <p class="loc-note" id="locNote"></p>
+        </div>
+        <div class="field">
+          <label for="fLimit">Time limit 限時 <span>(optional 選填)</span></label>
+          <input id="fLimit" type="text" placeholder="e.g. 2 hours · 例如：2 小時" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="fStatus">Report the status now 現在就回報狀況 <span>(optional 選填)</span></label>
+          <select id="fStatus">
+            <option value="">No report yet 先不回報</option>
+            <option value="lots">🟢 Lots of spots 很多空位</option>
+            <option value="few">🟡 Few left 剩很少</option>
+            <option value="full">🔴 Full 已滿</option>
+          </select>
+        </div>
+        <div class="field wide">
+          <label for="fNote">Note 備註 <span>(optional 選填)</span></label>
+          <textarea id="fNote" placeholder="Anything helpful — entrance, best time, watch-outs… 有用的提醒：入口、最佳時間、注意事項…"></textarea>
+        </div>
+      </div>
+      <p class="form-msg" id="formMsg" role="alert"></p>
+      <div class="add-actions">
+        <button class="add-submit" type="submit">Add this spot 加入這個停車點</button>
+        <button class="add-cancel" id="addCancel" type="button">Cancel 取消</button>
+      </div>
+    </form>
+  </section>
 
   <p class="count" id="count"></p>
   <main class="grid" id="grid"></main>
@@ -157,6 +241,17 @@ var SB_URL="https://kamzpeesnzsgxqvqrrlf.supabase.co/rest/v1/reports";
 var SB_KEY="sb_publishable_DXz553W6FhLOpilGtWp-Pg_TiChluNz";
 var shared={};
 var activeCity="all";
+var CUSTOM_KEY="bayarea-parking-custom-lots-v1";
+var customLots=[];
+try{customLots=JSON.parse(localStorage.getItem(CUSTOM_KEY)||"[]");if(!Array.isArray(customLots))customLots=[];}catch(e){customLots=[];}
+function saveCustomLots(){try{localStorage.setItem(CUSTOM_KEY,JSON.stringify(customLots))}catch(e){}}
+function allLots(){return LOTS.concat(customLots);}
+function wazeHref(l){
+  if(typeof l.lat==="number"&&typeof l.lng==="number")return "https://waze.com/ul?ll="+l.lat+","+l.lng+"&navigate=yes";
+  return "https://waze.com/ul?q="+encodeURIComponent(l.addr||l.en)+"&navigate=yes";
+}
+var pendingDelete=null;
+var pendingLoc=null;
 function cityName(id){for(var i=0;i<CITIES.length;i++)if(CITIES[i].id===id)return CITIES[i];return CITIES[0];}
 function loadReports(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
 function saveLocal(id,status){var r=loadReports();r[id]={s:status,t:Date.now()};try{localStorage.setItem(KEY,JSON.stringify(r))}catch(e){}}
@@ -204,7 +299,7 @@ function renderTabs(){
 function render(){
   renderTabs();
   var q=(document.getElementById("q").value||"").toLowerCase().trim();
-  var list=LOTS.filter(function(l){
+  var list=allLots().filter(function(l){
     if(activeCity!=="all"&&l.city!==activeCity)return false;
     if(!q)return true;
     var hay=(l.en+" "+l.zh+" "+l.addr+" "+cityName(l.city).en+" "+cityName(l.city).zh).toLowerCase();
@@ -216,31 +311,102 @@ function render(){
   list.forEach(function(l){
     var rep=bestReport(l.id);
     var cur=rep?('<span class="pill '+statusMeta(rep.s).cls+'">'+statusMeta(rep.s).txt+'</span><time>'+ago(rep.t)+(rep.shared?'':' · On this device only 只在這台裝置')+'，30 分鐘內有效</time>'):'<span style="color:var(--muted)">No recent report yet — be the first · 還沒有人回報，你可以當第一個</span>';
-    var card=document.createElement("article");card.className="card";
+    var card=document.createElement("article");card.className="card";card.id="card-"+l.id;
     card.innerHTML=
-      '<div class="city">'+esc(cityName(l.city).en)+' · '+esc(cityName(l.city).zh)+'</div>'+
-      '<h2>'+esc(l.en)+'<span class="zh">'+esc(l.zh)+'</span></h2>'+
+      '<div class="city">'+esc(cityName(l.city).en)+' · '+esc(cityName(l.city).zh)+(l.custom?'<span class="mine-badge">⭐ Added by you 你新增的</span>':'')+'</div>'+
+      '<h2>'+esc(l.en)+(l.zh?'<span class="zh">'+esc(l.zh)+'</span>':'')+'</h2>'+
       '<p class="addr">📍 '+esc(l.addr)+'</p>'+
       '<dl class="meta">'+
       '<div><dt>Cost 費用</dt><dd><span class="badge '+(l.costFree?"b-free":"b-paid")+'">'+esc(l.cost)+'</span></dd></div>'+
-      '<div><dt>Limit 限時</dt><dd>'+esc(l.limit)+'</dd></div>'+
-      '<div><dt>Hours 時間</dt><dd>'+esc(l.hours)+'</dd></div>'+
-      '<div><dt>Typical 平常</dt><dd>'+esc(l.typical)+'</dd></div>'+
+      (l.limit?'<div><dt>Limit 限時</dt><dd>'+esc(l.limit)+'</dd></div>':'')+
+      (l.hours?'<div><dt>Hours 時間</dt><dd>'+esc(l.hours)+'</dd></div>':'')+
+      (l.typical?'<div><dt>Typical 平常</dt><dd>'+esc(l.typical)+'</dd></div>':'')+
       '</dl>'+
-      '<p class="note">'+esc(l.note)+'</p>'+
+      (l.note?'<p class="note">'+esc(l.note)+'</p>':'')+
       '<div class="status"><div class="status-label">Shared report · 共享即時回報</div><div class="current">'+cur+'</div>'+
       '<div class="sbtns">'+
       '<button class="sbtn" data-id="'+l.id+'" data-s="lots">🟢 Lots<small>很多空位</small></button>'+
       '<button class="sbtn" data-id="'+l.id+'" data-s="few">🟡 Few<small>剩很少</small></button>'+
       '<button class="sbtn" data-id="'+l.id+'" data-s="full">🔴 Full<small>已滿</small></button>'+
       '</div></div>'+
-      '<a class="waze" target="_blank" rel="noopener" href="https://waze.com/ul?ll='+l.lat+','+l.lng+'&navigate=yes">Navigate with Waze · 用 Waze 導航 ↗</a>';
+      (l.custom?'<button class="del-btn'+(pendingDelete===l.id?' armed':'')+'" data-del="'+l.id+'" type="button">'+(pendingDelete===l.id?'Tap again to remove 再點一次刪除':'Remove this spot 刪除這個停車點')+'</button>':'')+
+      '<a class="waze" target="_blank" rel="noopener" href="'+wazeHref(l)+'">Navigate with Waze · 用 Waze 導航 ↗</a>';
     g.appendChild(card);
   });
   var btns=document.querySelectorAll(".sbtn");
   for(var i=0;i<btns.length;i++){btns[i].onclick=function(){postReport(this.getAttribute("data-id"),this.getAttribute("data-s")); };}
+  var dels=document.querySelectorAll("[data-del]");
+  for(var j=0;j<dels.length;j++){dels[j].onclick=function(){
+    var id=this.getAttribute("data-del");
+    if(pendingDelete!==id){pendingDelete=id;render();return;}
+    pendingDelete=null;
+    customLots=customLots.filter(function(x){return x.id!==id;});
+    saveCustomLots();render();
+  };}
 }
 document.getElementById("q").addEventListener("input",render);
+// --- Add your own spot ---
+var addForm=document.getElementById("addForm");
+var addToggle=document.getElementById("addToggle");
+var formMsg=document.getElementById("formMsg");
+var citySel=document.getElementById("fCity");
+CITIES.forEach(function(c){if(c.id==="all")return;var o=document.createElement("option");o.value=c.id;o.textContent=c.en+" "+c.zh;citySel.appendChild(o);});
+function setFormOpen(open){
+  addForm.classList.toggle("open",open);
+  addToggle.setAttribute("aria-expanded",open?"true":"false");
+  addToggle.textContent=open?"Close 收起":"＋ Add a spot 新增停車點";
+  if(open)document.getElementById("fName").focus();
+}
+addToggle.onclick=function(){setFormOpen(!addForm.classList.contains("open"));};
+document.getElementById("addCancel").onclick=function(){setFormOpen(false);};
+document.getElementById("locBtn").onclick=function(){
+  var note=document.getElementById("locNote");
+  if(!navigator.geolocation){note.textContent="Location isn't available in this browser — type the address instead. 這個瀏覽器不能定位，請直接輸入地址。";return;}
+  note.textContent="Getting your location… 正在定位…";
+  navigator.geolocation.getCurrentPosition(function(pos){
+    pendingLoc={lat:Math.round(pos.coords.latitude*100000)/100000,lng:Math.round(pos.coords.longitude*100000)/100000};
+    note.textContent="✓ Location captured — Waze will navigate to this exact spot. 已取得位置，Waze 會導航到這個確切位置。";
+  },function(){
+    pendingLoc=null;
+    note.textContent="Couldn't get your location — type the address instead. 無法取得位置，請直接輸入地址。";
+  },{timeout:10000});
+};
+addForm.addEventListener("submit",function(ev){
+  ev.preventDefault();
+  var name=document.getElementById("fName").value.trim();
+  var addr=document.getElementById("fAddr").value.trim();
+  var city=citySel.value;
+  var costVal=document.getElementById("fCost").value;
+  var limit=document.getElementById("fLimit").value.trim();
+  var note=document.getElementById("fNote").value.trim();
+  var status=document.getElementById("fStatus").value;
+  formMsg.className="form-msg";
+  if(!name){formMsg.className="form-msg err";formMsg.textContent="Please add a street or lot name first. 請先填街道或停車場名稱。";document.getElementById("fName").focus();return;}
+  if(!addr&&!pendingLoc){formMsg.className="form-msg err";formMsg.textContent="Please add an address, or tap “Use my current location”. 請填地址，或點「用我現在的位置」。";document.getElementById("fAddr").focus();return;}
+  var id="custom-"+Date.now().toString(36)+"-"+Math.floor(Math.random()*100000).toString(36);
+  var lot={
+    id:id, city:city, en:name, zh:"", custom:true,
+    addr:addr||("Pinned location 已定位位置 ("+pendingLoc.lat+", "+pendingLoc.lng+")"),
+    cost:costVal==="free"?"Free 免費":(costVal==="paid"?"Paid 收費":"Not sure 不確定"),
+    costFree:costVal==="free",
+    limit:limit, hours:"", typical:"",
+    note:note
+  };
+  if(pendingLoc){lot.lat=pendingLoc.lat;lot.lng=pendingLoc.lng;}
+  customLots.unshift(lot);
+  saveCustomLots();
+  activeCity="all";
+  document.getElementById("q").value="";
+  addForm.reset(); pendingLoc=null;
+  document.getElementById("locNote").textContent="";
+  formMsg.className="form-msg ok";
+  formMsg.textContent="✓ Added below — your new card is ready for reports. 已新增，在下面找你的新卡片，現在就可以回報空位。";
+  if(status){postReport(id,status);}else{render();}
+  setTimeout(function(){
+    var el=document.getElementById("card-"+id);
+    if(el)el.scrollIntoView({behavior:"smooth",block:"center"});
+  },60);
+});
 render();
 fetchReports();
 setInterval(render,60000);
