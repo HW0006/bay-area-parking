@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<meta name="theme-color" content="#0f3d3a"/>
+<link rel="icon" href="data:,"/>
+<title>Bay Area Parking — 灣區停車指南</title>
+<style>
+:root{
+  --bg:#f6f5f0; --card:#ffffff; --ink:#17201e; --muted:#5b6b66; --line:#ddd9cc;
+  --teal:#0f3d3a; --teal2:#14665e; --amber:#b7791f; --amber-bg:#fdf3d7;
+  --green:#1a7a4c; --green-bg:#e3f3e8; --red:#b42318; --red-bg:#fdecea;
+  --yellow-bg:#fff4cc; --chip:#e9e6da; --btn:#0f3d3a;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121614; --card:#1c2220; --ink:#eef2ef; --muted:#a7b5af; --line:#2e3835;
+  --teal:#7fd1c3; --teal2:#7fd1c3; --amber:#e8b44a; --amber-bg:#3a2f14;
+  --green:#6fdc9a; --green-bg:#163324; --red:#ff9a8f; --red-bg:#3d1f1c;
+  --yellow-bg:#3a3316; --chip:#2a322f; --btn:#e8f3f0; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Avenir Next",system-ui,-apple-system,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.55}
+a{color:var(--teal2)}
+.wrap{max-width:1060px;margin:0 auto;padding:20px 16px 48px}
+.hero{padding:8px 0 4px}
+.hero h1{font-size:32px;line-height:1.15;margin:0;letter-spacing:-.02em}
+.hero h1 span{font-weight:500;color:var(--muted);font-size:22px}
+.lede{font-size:16px;color:var(--muted);margin:10px 0 0;max-width:680px}
+.lede strong{color:var(--ink)}
+.tip{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:16px 0 0;font-size:14px}
+.tip b{white-space:nowrap}
+.controls{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:5}
+.search{width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:16px;min-height:48px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 13px;border-radius:999px;font-size:14px;cursor:pointer;min-height:40px}
+.tab[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700}
+@media (prefers-color-scheme: dark){.tab[aria-pressed="true"]{color:#0b1513}}
+.banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--teal);color:#fff;border-radius:14px;padding:14px 16px;margin:8px 0 18px}
+@media (prefers-color-scheme: dark){.banner{color:#0b1513;background:#7fd1c3}}
+.banner p{margin:0;font-size:14px;max-width:640px}
+.banner a{background:#fff;color:#0f3d3a;font-weight:700;text-decoration:none;padding:10px 14px;border-radius:10px;min-height:40px;display:inline-flex;align-items:center}
+.count{font-size:13px;color:var(--muted);margin:4px 0 12px}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media(min-width:960px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.city{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--teal2)}
+.card h2{font-size:18px;line-height:1.3;margin:0}
+.card h2 .zh{display:block;font-size:15px;font-weight:600;color:var(--muted);margin-top:2px}
+.addr{font-size:13px;color:var(--muted);margin:0}
+.meta{font-size:14px;display:grid;gap:6px}
+.meta div{display:flex;gap:8px}
+.meta dt{flex:0 0 74px;color:var(--muted);font-size:13px}
+.meta dd{margin:0;font-weight:600}
+.note{font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin:0}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px}
+.b-free{background:var(--green-bg);color:var(--green)} .b-paid{background:var(--amber-bg);color:var(--amber)}
+.waze{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--btn);color:var(--bg);text-decoration:none;font-weight:700;padding:12px;border-radius:12px;min-height:48px;font-size:15px;margin-top:auto}
+@media (prefers-color-scheme: light){.waze{color:#fff}}
+.status{border-top:1px solid var(--line);padding-top:10px}
+.status-label{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.current{font-size:14px;margin:6px 0 8px;min-height:22px}
+.current .pill{font-weight:800;padding:2px 8px;border-radius:999px}
+.p-lots{background:var(--green-bg);color:var(--green)} .p-few{background:var(--yellow-bg);color:var(--amber)} .p-full{background:var(--red-bg);color:var(--red)}
+.current time{color:var(--muted);font-size:12.5px;display:block;margin-top:3px}
+.sbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.sbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 4px;font-size:13px;cursor:pointer;min-height:44px;line-height:1.3}
+.sbtn small{display:block;font-size:11px;color:var(--muted)}
+.sbtn:active{transform:scale(.98)}
+.empty{display:none;text-align:center;padding:40px 16px;color:var(--muted)}
+footer{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+footer p{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>Bay Area Parking <span>灣區停車指南</span></h1>
+    <p class="lede">Free lots, time limits, and the smart place to go first — for <strong>9 South Bay &amp; Peninsula cities</strong>. No circling, no guessing.<br>9 個城市的免費停車場、限時規則和最推薦先去的地方，不用再繞圈找位子。</p>
+    <div class="tip"><b>💡 Tip 小提示</b><span>Most downtown garages below are free or free for the first hours. When in doubt, go straight to the garage — street spots fill first.<br>下面大多數市中心停車場都免費或前幾小時免費。不確定時直接去停車場，路邊位子最快被搶完。</span></div>
+  </header>
+
+  <div class="controls">
+    <input class="search" id="q" type="search" placeholder="Search a lot, library, street… 搜尋停車場、圖書館、街道…" aria-label="Search parking lots 搜尋停車場">
+    <div class="tabs" id="tabs" role="group" aria-label="Filter by city 依城市篩選"></div>
+  </div>
+
+  <div class="banner">
+    <p><strong>San Jose live counts 即時空位：</strong> Downtown San Jose is the one place here with a real live feed. ParkSJ shows % full and spots left, updated live — check before you drive.<br>聖荷西市中心是這裡唯一有真正即時資料的地方，ParkSJ 會顯示滿位比例和剩餘位子，出發前先看。</p>
+    <a href="https://parksj.org/" target="_blank" rel="noopener">Open ParkSJ ↗ 開啟 ParkSJ</a>
+  </div>
+
+  <p class="count" id="count"></p>
+  <main class="grid" id="grid"></main>
+  <div class="empty" id="empty">No lots match that search. 沒有符合的停車場，換個關鍵字試試。</div>
+
+  <footer>
+    <p><strong>About the status reports 關於空位回報：</strong> Tap “Lots / Few / Full” when you arrive or leave — it helps the next driver. Reports are saved <strong>on this device only</strong> in this version, and expire after 30 minutes. 回報只存在這台裝置上，30 分鐘後自動過期。</p>
+    <p>Typical availability is a general pattern, not a live count. Always check posted signs for the final rule — signs win. 「平常狀況」是一般經驗，不是即時數字；現場標誌才是最後依據。</p>
+    <p>Directions open in Waze. 導航會開啟 Waze。</p>
+  </footer>
+</div>
+
+<script>
+var CITIES=[
+ {id:"all",en:"All Cities",zh:"全部"},
+ {id:"campbell",en:"Campbell",zh:"坎貝爾"},
+ {id:"sanjose",en:"San Jose",zh:"聖荷西"},
+ {id:"paloalto",en:"Palo Alto",zh:"帕羅奧圖"},
+ {id:"saratoga",en:"Saratoga",zh:"薩拉托加"},
+ {id:"losgatos",en:"Los Gatos",zh:"洛斯加托斯"},
+ {id:"fremont",en:"Fremont",zh:"佛利蒙"},
+ {id:"cupertino",en:"Cupertino",zh:"庫比蒂諾"},
+ {id:"menlopark",en:"Menlo Park",zh:"門洛帕克"},
+ {id:"atherton",en:"Atherton",zh:"阿瑟頓"}
+];
+var LOTS=[
+ // Campbell
+ {id:"campbell-first",city:"campbell",en:"First Street Garage",zh:"第一街停車場",addr:"N 1st St, Campbell, CA 95008",lat:37.28996,lng:-121.94486,cost:"Free 免費",costFree:true,limit:"No posted short limit 無短時限",hours:"Downtown hours 市中心時段",typical:"Usually has spaces, even at peak 尖峰通常也有位",note:"Best first stop for downtown. Downtown Campbell has 1,000+ free off-street spaces across two garages and surface lots — skip circling on Campbell Ave. 去市中心先來這裡，全市中心有 1000+ 個免費位子，不要在 Campbell Ave 繞圈。"},
+ {id:"campbell-library",city:"campbell",en:"Campbell Library Lot",zh:"Campbell 圖書館停車場",addr:"77 Harrison Ave, Campbell, CA 95008",lat:37.288223,lng:-121.943246,cost:"Free 免費",costFree:true,limit:"Library visits 圖書館使用",hours:"Library: Mon–Wed until 9 PM 圖書館週一至三到晚上 9 點",typical:"Limited during events & storytimes 活動和說故事時間容易滿",note:"On-site and behind the library, shared lot. If full, the First Street Garage is a short walk. 停車場在館旁和後面，是共用停車場；滿了就去第一街停車場，走路很近。"},
+ // San Jose
+ {id:"sj-sanpedro",city:"sanjose",en:"Market & San Pedro Square Garage",zh:"Market & San Pedro 停車場",addr:"45 N Market St, San Jose, CA 95110",lat:37.33686,lng:-121.89418,cost:"Paid · 90 min free 收費 · 前 90 分鐘免費",costFree:false,limit:"See ParkSJ 看 ParkSJ",hours:"See ParkSJ for hours 看 ParkSJ",typical:"Check ParkSJ live 出發前查即時",note:"One of 6 city garages with 90 minutes free. Use the ParkSJ banner above for the live % full before you go. 6 個前 90 分鐘免費的市立停車場之一，出發前用上方 ParkSJ 看即時狀況。"},
+ {id:"sj-convention",city:"sanjose",en:"Convention Center Garage",zh:"會議中心停車場",addr:"150 W San Carlos St, San Jose, CA 95113",lat:37.32916,lng:-121.88899,cost:"Paid · 90 min free 收費 · 前 90 分鐘免費",costFree:false,limit:"Event rates vary 活動日價格不同",hours:"See ParkSJ for hours 看 ParkSJ",typical:"Busy on event days 有活動時很滿",note:"Closest garage for the San Jose McEnery Convention Center. Check ParkSJ live counts on event days. 離會議中心最近，有活動的日子先查 ParkSJ 即時空位。"},
+ {id:"sj-third",city:"sanjose",en:"Third Street Garage",zh:"第三街停車場",addr:"95 N 3rd St, San Jose, CA 95112",lat:37.33809,lng:-121.8893,cost:"Paid · 90 min free 收費 · 前 90 分鐘免費",costFree:false,limit:"See ParkSJ 看 ParkSJ",hours:"See ParkSJ for hours 看 ParkSJ",typical:"Check ParkSJ live 出發前查即時",note:"Handy for Japantown / downtown north. Live availability on ParkSJ. 去日本城或市中心北邊很方便，即時空位看 ParkSJ。"},
+ // Palo Alto
+ {id:"pa-bryant",city:"paloalto",en:"Bryant / Lytton Garage",zh:"Bryant / Lytton 停車場",addr:"445 Bryant St, Palo Alto, CA 94301",lat:37.446395,lng:-122.162277,cost:"Free 免費",costFree:true,limit:"3 hours 限 3 小時",hours:"Enforced Mon–Fri 8 AM–5 PM 執法週一至五 8–17 點",typical:"Good bet downtown 市中心的好選擇",note:"Downtown garages are free up to 3 hours; most street parking is 2 hours and color zones apply. 市中心停車場免費 3 小時，路邊大多 2 小時，還有顏色分區規則。"},
+ {id:"pa-webster",city:"paloalto",en:"Webster / Cowper Garage",zh:"Webster / Cowper 停車場",addr:"520 Webster St, Palo Alto, CA 94301",lat:37.44886,lng:-122.15794,cost:"Free 免費",costFree:true,limit:"3 hours 限 3 小時",hours:"Enforced Mon–Fri 8 AM–5 PM 執法週一至五 8–17 點",typical:"Often easier than Bryant 靠近大學大道東側",note:"Free up to 3 hours in the garage. Watch the posted time limit — enforcement is active on weekdays. 免費 3 小時，平日會執法，注意標誌。"},
+ {id:"pa-civic",city:"paloalto",en:"Civic Center Garage",zh:"市政中心停車場",addr:"250 Hamilton Ave, Palo Alto, CA 94301",lat:37.44421,lng:-122.15978,cost:"Free 免費",costFree:true,limit:"3 hours 限 3 小時",hours:"Enforced Mon–Fri 8 AM–5 PM 執法週一至五 8–17 點",typical:"Good for City Hall & library 適合市政廳和圖書館",note:"Under / by Civic Center. Same downtown rule: garages 3 hours free, street usually 2 hours. 在市政中心旁，規則相同：停車場免費 3 小時，路邊通常 2 小時。"},
+ // Saratoga
+ {id:"saratoga-village",city:"saratoga",en:"Saratoga Village Center Lot",zh:"薩拉托加村中心停車場",addr:"14421 Big Basin Way, Saratoga, CA 95070",lat:37.25878,lng:-122.03287,cost:"Free 免費",costFree:true,limit:"Village parking 村內停車",hours:"Daytime village hours 白天",typical:"Tight on weekends 週末很搶手",note:"Free Village parking. Arrive early on weekends — the Village fills fast for dining and wine tasting. 村內免費停車，週末吃飯和品酒人潮多，要早點到。"},
+ {id:"saratoga-bigbasin",city:"saratoga",en:"Big Basin Way Street Parking",zh:"Big Basin Way 路邊停車",addr:"Big Basin Way, Saratoga, CA 95070",lat:37.25878,lng:-122.03287,cost:"Free 免費",costFree:true,limit:"Check signs 看現場標誌",hours:"Daytime 白天",typical:"First to fill 最快被停滿",note:"Street spots on the main Village strip go first. If none, use the Village Center lot instead of circling. 主街路邊位子最先滿，沒位子就直接去村中心停車場。"},
+ // Los Gatos
+ {id:"lg-library",city:"losgatos",en:"Los Gatos Library Lot",zh:"洛斯加托斯圖書館停車場",addr:"100 Villa Ave, Los Gatos, CA 95030",lat:37.21999,lng:-121.97773,cost:"Free 免費",costFree:true,limit:"90 min max, Mon–Fri 8 AM–5 PM only 平日 8–17 點限 90 分鐘",hours:"Limit applies weekdays only 限時只在平日",typical:"Strict on weekday days 平日白天管很嚴",note:"The 90-minute cap is only Mon–Fri 8 AM–5 PM. Evenings and weekends are different — still check the sign. 90 分鐘限制只在週一至五早上 8 點到下午 5 點，晚上和週末不同，仍以標誌為準。"},
+ {id:"lg-northside",city:"losgatos",en:"Northside Lot",zh:"Northside 停車場",addr:"140 Los Gatos–Saratoga Rd, Los Gatos, CA 95032",lat:37.22856,lng:-121.97978,cost:"Free 免費",costFree:true,limit:"Free all-day 全天免費",hours:"All day 全天",typical:"Best for a long downtown stay 要待久一點選這裡",note:"One of the free all-day lots — best pick if you will be downtown longer than 3 hours. 全天免費的停車場之一，要待超過 3 小時選這裡。"},
+ {id:"lg-miles",city:"losgatos",en:"Miles Avenue Lot",zh:"Miles Avenue 停車場",addr:"Miles Ave, Los Gatos, CA 95030",lat:37.22428,lng:-121.97839,cost:"Free 免費",costFree:true,limit:"Free all-day 全天免費",hours:"All day 全天",typical:"Free all-day alternative 全天免費備選",note:"Also free all-day. For shorter stops: six downtown public lots are free 3 hours Mon–Sat 9 AM–6 PM, street is 2 hours. 這裡也全天免費。短停的話：市中心 6 個公共停車場週一至六 9–18 點免費 3 小時，路邊 2 小時。"},
+ // Fremont
+ {id:"fremont-event",city:"fremont",en:"Downtown Event Center Area",zh:"市中心活動中心一帶",addr:"3500 Capitol Ave, Fremont, CA 94538",lat:37.55019,lng:-121.98412,cost:"Free / event varies 免費 / 活動日依現場",costFree:true,limit:"Check signs 看現場標誌",hours:"Event center hours 依活動中心",typical:"Busy during events 有活動時很滿",note:"Parking around the Downtown Event Center and plaza. On event nights, arrive early or use the City Hall lots nearby. 活動中心和廣場周邊停車，有活動的晚上要早到，或停附近市政廳停車場。"},
+ {id:"fremont-cityhall",city:"fremont",en:"City Hall / Civic Center Lots",zh:"市政廳停車場",addr:"3300 Capitol Ave, Fremont, CA 94538",lat:37.55256,lng:-121.98207,cost:"Free 免費",costFree:true,limit:"Check signs 看現場標誌",hours:"Civic center hours 市政中心時段",typical:"Steadier than event parking 比活動停車穩",note:"City Hall / Civic Center lots on Capitol Ave — a calmer backup when the Event Center is busy. Capitol Ave 上的市政廳停車場，活動中心滿的時候這裡是穩一點的備選。"},
+ // Cupertino
+ {id:"cupertino-library",city:"cupertino",en:"Cupertino Library Lot",zh:"庫比蒂諾圖書館停車場",addr:"10800 Torre Ave, Cupertino, CA 95014",lat:37.31772,lng:-122.02852,cost:"Free 免費",costFree:true,limit:"Library / Civic Center 圖書館使用",hours:"Library hours 圖書館時段",typical:"Large lot — fills 3–5 PM after school 大停車場，下午 3–5 點放學後易滿",note:"Big shared lot for the library and Civic Center. The after-school rush (3–5 PM) is the pinch point. 圖書館和市政中心共用的大停車場，下午 3 到 5 點放學人潮是尖峰。"},
+ {id:"cupertino-mainst",city:"cupertino",en:"Main Street Cupertino Garages",zh:"Main Street Cupertino 停車場",addr:"Main Street Cupertino, Cupertino, CA 95014",lat:37.32366,lng:-122.00882,cost:"Free garage 免費停車場",costFree:true,limit:"Check garage signs 看停車場標誌",hours:"Retail hours 商場時段",typical:"Garage parking for dining & shops 吃飯購物用",note:"Use the Main Street garages for restaurants and shops instead of hunting for surface spots. 去餐廳和商店直接停 Main Street 停車場，不用找平面位子。"},
+ // Menlo Park
+ {id:"mp-plazas",city:"menlopark",en:"Downtown Plazas 1, 2, 3, 5, 6, 7, 8",zh:"市中心停車廣場 1、2、3、5、6、7、8",addr:"Santa Cruz Ave, Menlo Park, CA 94025",lat:37.45055,lng:-122.18547,cost:"Free 免費",costFree:true,limit:"3 hours 限 3 小時",hours:"Enforced Mon–Fri 8 AM–6 PM 執法週一至五 8–18 點",typical:"~1,440 free spaces across 8 plazas 八個廣場合計約 1440 個免費位",note:"Eight free downtown plazas. Plazas 1 and 5 have kiosks if you need to buy extra time. 市中心有 8 個免費廣場，1 號和 5 號有繳費機可以買額外時間。"},
+ {id:"mp-plaza4",city:"menlopark",en:"Downtown Plaza 4",zh:"市中心停車廣場 4",addr:"Santa Cruz Ave, Menlo Park, CA 94025",lat:37.45055,lng:-122.18547,cost:"Free 免費",costFree:true,limit:"2 hours 限 2 小時",hours:"Enforced Mon–Fri 8 AM–6 PM 執法週一至五 8–18 點",typical:"Shorter limit — watch the clock 時限較短要注意時間",note:"Plaza 4 is the exception: free for 2 hours only, not 3 like the other plazas. 4 號是例外，只有免費 2 小時，其他廣場是 3 小時。"},
+ // Atherton
+ {id:"atherton-town",city:"atherton",en:"Atherton Town Center / Library Lot",zh:"阿瑟頓市政中心 / 圖書館停車場",addr:"2 Dinkelspiel Station Ln, Atherton, CA 94027",lat:37.46329,lng:-122.19697,cost:"Free 免費",costFree:true,limit:"Town Center visits 市政中心使用",hours:"Library / Town Center hours 圖書館時段",typical:"Fills fast at midday Mon–Thu 週一至四中午很快就滿",note:"Only 98 car spaces + 3 motorcycle spaces, and midday demand Mon–Thu often exceeds capacity. Ashfield Rd and Maple Ave nearby are permit parking — do not rely on them. If full, park at Holbrook-Palmer Park and walk over. 只有 98 個汽車位加 3 個機車位，週一至四中午常常不夠停。附近 Ashfield Rd 和 Maple Ave 是許可證停車，不要靠那邊；滿了就停 Holbrook-Palmer 公園走過來。"},
+ {id:"atherton-park",city:"atherton",en:"Holbrook-Palmer Park Lot",zh:"Holbrook-Palmer 公園停車場",addr:"150 Watkins Ave, Atherton, CA 94027",lat:37.463818,lng:-122.190934,cost:"Free 免費",costFree:true,limit:"Park hours 公園時段",hours:"Park 8 AM–7 PM (Mon until 4 PM) 公園 8–19 點（週一到 16 點）",typical:"Ample parking per the Town 鎮公所說位子充足",note:"The Town encourages library visitors to park here and walk to Town Center via Dinkelspiel Station Lane — the reliable backup when the Town Center lot is full. 鎮公所鼓勵圖書館訪客停這裡，再沿 Dinkelspiel Station Lane 走去市政中心，市政中心滿時這是最穩的備選。"}
+];
+var KEY="bayarea-parking-reports-v1";
+var activeCity="all";
+function cityName(id){for(var i=0;i<CITIES.length;i++)if(CITIES[i].id===id)return CITIES[i];return CITIES[0];}
+function loadReports(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
+function saveReport(id,status){var r=loadReports();r[id]={s:status,t:Date.now()};try{localStorage.setItem(KEY,JSON.stringify(r))}catch(e){}render();}
+function freshReport(id){var r=loadReports()[id];if(!r)return null;if(Date.now()-r.t>30*60*1000)return null;return r;}
+function ago(t){var m=Math.max(1,Math.round((Date.now()-t)/60000));return m+" min ago · "+m+" 分鐘前";}
+function statusMeta(s){if(s==="lots")return{cls:"p-lots",txt:"🟢 Lots of spots · 很多空位"};if(s==="few")return{cls:"p-few",txt:"🟡 Few left · 剩很少"};return{cls:"p-full",txt:"🔴 Full · 已滿"};}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function renderTabs(){
+  var el=document.getElementById("tabs");el.innerHTML="";
+  CITIES.forEach(function(c){
+    var b=document.createElement("button");b.className="tab";b.setAttribute("aria-pressed",c.id===activeCity?"true":"false");
+    b.textContent=c.en+" "+c.zh;b.onclick=function(){activeCity=c.id;render();};
+    el.appendChild(b);
+  });
+}
+function render(){
+  renderTabs();
+  var q=(document.getElementById("q").value||"").toLowerCase().trim();
+  var list=LOTS.filter(function(l){
+    if(activeCity!=="all"&&l.city!==activeCity)return false;
+    if(!q)return true;
+    var hay=(l.en+" "+l.zh+" "+l.addr+" "+cityName(l.city).en+" "+cityName(l.city).zh).toLowerCase();
+    return hay.indexOf(q)>-1;
+  });
+  document.getElementById("count").textContent="Showing "+list.length+" lots · 顯示 "+list.length+" 個停車場";
+  document.getElementById("empty").style.display=list.length?"none":"block";
+  var g=document.getElementById("grid");g.innerHTML="";
+  list.forEach(function(l){
+    var rep=freshReport(l.id);
+    var cur=rep?('<span class="pill '+statusMeta(rep.s).cls+'">'+statusMeta(rep.s).txt+'</span><time>Reported '+ago(rep.t)+' · 回報於 '+ago(rep.t).split("·")[1].trim()+'，30 分鐘內有效</time>'):'<span style="color:var(--muted)">No recent report yet — be the first · 還沒有人回報，你可以當第一個</span>';
+    var card=document.createElement("article");card.className="card";
+    card.innerHTML=
+      '<div class="city">'+esc(cityName(l.city).en)+' · '+esc(cityName(l.city).zh)+'</div>'+
+      '<h2>'+esc(l.en)+'<span class="zh">'+esc(l.zh)+'</span></h2>'+
+      '<p class="addr">📍 '+esc(l.addr)+'</p>'+
+      '<dl class="meta">'+
+      '<div><dt>Cost 費用</dt><dd><span class="badge '+(l.costFree?"b-free":"b-paid")+'">'+esc(l.cost)+'</span></dd></div>'+
+      '<div><dt>Limit 限時</dt><dd>'+esc(l.limit)+'</dd></div>'+
+      '<div><dt>Hours 時間</dt><dd>'+esc(l.hours)+'</dd></div>'+
+      '<div><dt>Typical 平常</dt><dd>'+esc(l.typical)+'</dd></div>'+
+      '</dl>'+
+      '<p class="note">'+esc(l.note)+'</p>'+
+      '<div class="status"><div class="status-label">Live report · 即時回報（這台裝置）</div><div class="current">'+cur+'</div>'+
+      '<div class="sbtns">'+
+      '<button class="sbtn" data-id="'+l.id+'" data-s="lots">🟢 Lots<small>很多空位</small></button>'+
+      '<button class="sbtn" data-id="'+l.id+'" data-s="few">🟡 Few<small>剩很少</small></button>'+
+      '<button class="sbtn" data-id="'+l.id+'" data-s="full">🔴 Full<small>已滿</small></button>'+
+      '</div></div>'+
+      '<a class="waze" target="_blank" rel="noopener" href="https://waze.com/ul?ll='+l.lat+','+l.lng+'&navigate=yes">Navigate with Waze · 用 Waze 導航 ↗</a>';
+    g.appendChild(card);
+  });
+  var btns=document.querySelectorAll(".sbtn");
+  for(var i=0;i<btns.length;i++){btns[i].onclick=function(){saveReport(this.getAttribute("data-id"),this.getAttribute("data-s")); };}
+}
+document.getElementById("q").addEventListener("input",render);
+render();
+setInterval(render,60000);
+</script>
+</body>
+</html>
